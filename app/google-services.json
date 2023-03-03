@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "556350046438",
+    "project_id": "myvault77",
+    "storage_bucket": "myvault77.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:556350046438:android:5c314263741f1b4f257b27",
+        "android_client_info": {
+          "package_name": "com.example.myvault"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "556350046438-jipfq17m0nljlv3gebrg6ildglpth7vo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCujlPJbORU-50QraEc00U3vz5ZdCFumaw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "556350046438-jipfq17m0nljlv3gebrg6ildglpth7vo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
