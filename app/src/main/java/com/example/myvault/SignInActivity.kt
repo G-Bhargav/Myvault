@@ -37,14 +37,46 @@ class SignInActivity : AppCompatActivity() {
                             startActivity(intent)
                         } else {
 
-                            Toast.makeText(this, "password is not matching", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this, "credentials aren't matching", Toast.LENGTH_SHORT).show()
                         }
                     }
 
 
-            } else {
-                Toast.makeText(this, "Empty Fields Are not Allowed !!", Toast.LENGTH_SHORT).show()
             }
+
+            if(email.isEmpty()){
+                binding.EmailSignIn.error=" Username cannot be empty"
+            }
+            if(pass.isEmpty()){
+                binding.PasswordSignIn.error=" password cannot be empty"
+            }
+            fun isValidPassword(pass:String):Boolean{
+                if(pass.length<8) return false
+                var u = 0
+                var l = 0
+                var d = 0
+                var s = 0
+                for (char in pass){
+                    if(char.isUpperCase()) u++
+                    else if(char.isLowerCase()) l++
+                    else if(char.isDigit()) d++
+                    else if(char in "@#$%^&+=_.") s++
+                }
+                if(u==0|| l==0 || s==0 || d==0) return false
+                return true
+            }
+            if (!isValidPassword(pass)){
+                binding.PasswordSignIn.error="password length>= 6\n should contain at least one capital letter\nshould contain atleast one small letter\n should contain atleast one number\nshould contain atleast one special character(@#\$%^&+=_.)"
+
+            }
+        }
+    }
+    override fun onStart() {
+        super.onStart()
+        if (firebaseAuth.currentUser!=null){
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+
         }
     }
 }
