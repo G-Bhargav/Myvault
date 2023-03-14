@@ -37,7 +37,7 @@ class SignInActivity : AppCompatActivity() {
                             startActivity(intent)
                         } else {
 
-                            Toast.makeText(this, "credentials aren't matching", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this, it.exception.toString(), Toast.LENGTH_SHORT).show()
                         }
                     }
 
