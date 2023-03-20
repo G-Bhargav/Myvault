@@ -6,11 +6,14 @@ import android.os.Bundle
 import android.widget.Toast
 import com.example.myvault.databinding.ActivitySignUpBinding
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 
 class SignUpActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySignUpBinding
     private lateinit var firebaseAuth: FirebaseAuth
+    private lateinit var database: DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,6 +22,7 @@ class SignUpActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         firebaseAuth = FirebaseAuth.getInstance()
+        database= FirebaseDatabase.getInstance().getReference("Users")
 
 
         binding.textView.setOnClickListener {
@@ -30,12 +34,20 @@ class SignUpActivity : AppCompatActivity() {
             val email = binding.EmailSignUp.text.toString()
             val pass = binding.PasswordSignUp.text.toString()
             val confirmpass = binding.ConfirmPasswordSignUp.text.toString()
+            val value = email!!.trim().substringBefore(".").toString()
 
             if (email.isNotEmpty() && pass.isNotEmpty() && confirmpass.isNotEmpty()) {
                 if (pass == confirmpass) {
                     firebaseAuth.createUserWithEmailAndPassword(email, pass).addOnCompleteListener {
                         if (it.isSuccessful) {
                             val intent = Intent(this, MainActivity::class.java)
+
+                            val newUser= NewUser(value)
+                            database.child(value).setValue(newUser).addOnSuccessListener {
+                                Toast.makeText(this,"Account Successfully created",Toast.LENGTH_SHORT).show()
+                            }.addOnFailureListener{
+                                Toast.makeText(this,it.toString(),Toast.LENGTH_SHORT).show()
+                            }
                             startActivity(intent)
                         } else {
 
