@@ -1,3 +1,3 @@
 package com.example.myvault
 
-data class File(var Filename: String?= null,var FileExtension: String?=null )
+data class File(var FileExtension: String?=null , var FileUrl : String?= null)
