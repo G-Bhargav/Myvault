@@ -6,13 +6,15 @@
     android:layout_height="match_parent"
     tools:context=".PdfFragment">
 
-    <TextView
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvPdfName"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="PdfFragment"
-        android:gravity="center"
-        android:textSize="40sp"
-        android:textStyle="italic"/>
-
-
+        android:contentDescription="Pdfs"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/textView2"
+        app:layout_constraintStart_toStartOf="@+id/textView2"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:listitem="@layout/pdfname" />
 </FrameLayout>

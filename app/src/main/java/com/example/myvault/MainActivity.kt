@@ -2,17 +2,16 @@ package com.example.myvault
 
 import android.content.Context
 import android.content.Intent
-import android.content.pm.LauncherActivityInfo
 import android.net.Uri
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.OpenableColumns
 import android.view.View
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.example.myvault.databinding.ActivityMainBinding
 import com.google.android.material.tabs.TabLayout
@@ -21,7 +20,9 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
+import java.text.DecimalFormat
 
+@Suppress("DEPRECATION")
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
@@ -32,6 +33,7 @@ class MainActivity : AppCompatActivity() {
     private var storageReference= Firebase.storage.reference
     private  var currentfile: Uri?= null
     private lateinit var database : DatabaseReference
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,6 +67,8 @@ class MainActivity : AppCompatActivity() {
                     if(tab.position==0){
                         binding.btnImageAdd.visibility= View.VISIBLE
                         binding.btnPdfAdd.visibility= View.GONE
+
+
                     }else{
                         binding.btnImageAdd.visibility= View.GONE
                         binding.btnPdfAdd.visibility= View.VISIBLE
@@ -105,25 +109,12 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        binding.btnUpload.setOnClickListener{
-            //      var fil: String = System.currentTimeMillis().toString()
-
-
-            binding.btnUpload.text= "Uploading.."
-
-        }
-
-
-
-
     }
     private val Launcher=registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
             result ->
         (if(result.resultCode== RESULT_OK ){
             result?.data?.data?.let {
                 currentfile = it
-                val imageView: ImageView= findViewById(R.id.ImageView)
-                imageView.setImageURI(it)
                 val fil = getFilenameFromUri(this,it).toString()
                 uploadImageToStorage(fil)
                 binding.btnUpload.visibility= View.VISIBLE
@@ -140,7 +131,7 @@ class MainActivity : AppCompatActivity() {
         (if(result.resultCode== RESULT_OK ){
             result?.data?.data?.let {
                 currentfile = it
-                var fil = getFilenameFromUri(this,it).toString()
+                val fil = getFilenameFromUri(this,it).toString()
                 uploadPdfToStorage(fil)
                 binding.btnUpload.visibility= View.VISIBLE
             }
@@ -191,8 +182,10 @@ class MainActivity : AppCompatActivity() {
             currentfile?.let {
 
                 storageReference.child("PDFs/${filename}").putFile(it).addOnProgressListener {
-
-                    binding.btnUpload.text= "Uploading(${(it.bytesTransferred/it.totalByteCount)*100})"
+                    val prog : DecimalFormat = DecimalFormat("##.##")
+                    var progr = prog.format(it.bytesTransferred.toFloat()/it.totalByteCount.toFloat())
+                    var progre = progr.toFloat()*100
+                    binding.btnUpload.text= ("Uploading($progre)").toString()
                 }.addOnSuccessListener {
                     binding.btnUpload.visibility= View.GONE
                     Toast.makeText(this,"Successfully Uploaded in Storage",Toast.LENGTH_SHORT).show()
@@ -231,6 +224,15 @@ class MainActivity : AppCompatActivity() {
         cursor?.close()
         return fileName
     }
+    override fun onBackPressed() {
+        val startMain = Intent(Intent.ACTION_MAIN)
+        startMain.addCategory(Intent.CATEGORY_HOME)
+        startMain.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(startMain)
+    }
+
+
+
 
 }
 
