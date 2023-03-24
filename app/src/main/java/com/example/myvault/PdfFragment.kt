@@ -2,18 +2,16 @@ package com.example.myvault
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.myvault.databinding.FragmentImageBinding
 import com.example.myvault.databinding.FragmentPdfBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import android.content.Intent
 
 
 class PdfFragment : Fragment() {
@@ -58,17 +56,6 @@ class PdfFragment : Fragment() {
         pdfAdapter = PdfAdapter(pdfsList)
         recyclerView.adapter = pdfAdapter
 
-        pdfAdapter.onItemClick = {
-            Log.d("itemclick", "clicked")
-            val pdfasnme = it.pdfname
-            val filesUrl = it.fileURl
-
-        }
-
         return binding.root
     }
-
 }
-
-
-

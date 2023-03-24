@@ -48,6 +48,7 @@ class MainActivity : AppCompatActivity() {
             firebaseAuth.signOut()
             val intent = Intent(this, SignInActivity::class.java)
             startActivity(intent)
+            finish()
         }
 
         adapter= FragmentPageAdapter(supportFragmentManager,lifecycle)
@@ -67,8 +68,6 @@ class MainActivity : AppCompatActivity() {
                     if(tab.position==0){
                         binding.btnImageAdd.visibility= View.VISIBLE
                         binding.btnPdfAdd.visibility= View.GONE
-
-
                     }else{
                         binding.btnImageAdd.visibility= View.GONE
                         binding.btnPdfAdd.visibility= View.VISIBLE
@@ -146,7 +145,9 @@ class MainActivity : AppCompatActivity() {
             currentfile?.let {
 
                 storageReference.child("Images/${filename}").putFile(it).addOnProgressListener {
-                    binding.btnUpload.text= "Uploading(${(it.bytesTransferred/it.totalByteCount)*100})"
+                    val prog : DecimalFormat = DecimalFormat("##")
+                    var progr = prog.format(it.bytesTransferred.toFloat()/it.totalByteCount.toFloat()).toFloat()*100
+                    binding.btnUpload.text= ("Uploading($progr)%").toString()
                 }.addOnSuccessListener {
                     binding.btnUpload.visibility= View.GONE
                     Toast.makeText(this,"Successfully Uploaded in Storage",Toast.LENGTH_SHORT).show()
@@ -182,10 +183,9 @@ class MainActivity : AppCompatActivity() {
             currentfile?.let {
 
                 storageReference.child("PDFs/${filename}").putFile(it).addOnProgressListener {
-                    val prog : DecimalFormat = DecimalFormat("##.##")
-                    var progr = prog.format(it.bytesTransferred.toFloat()/it.totalByteCount.toFloat())
-                    var progre = progr.toFloat()*100
-                    binding.btnUpload.text= ("Uploading($progre)").toString()
+                    val prog : DecimalFormat = DecimalFormat("##")
+                    var progr = prog.format(it.bytesTransferred.toFloat()/it.totalByteCount.toFloat()).toFloat()*100
+                    binding.btnUpload.text= ("Uploading($progr)%").toString()
                 }.addOnSuccessListener {
                     binding.btnUpload.visibility= View.GONE
                     Toast.makeText(this,"Successfully Uploaded in Storage",Toast.LENGTH_SHORT).show()

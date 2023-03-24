@@ -36,6 +36,7 @@ class ImageFragment : Fragment() {
         databaseReference= FirebaseDatabase.getInstance().getReference().child(username).child("Images")
         databaseReference.addValueEventListener(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
+                imagesList= arrayListOf()
                 if (snapshot.exists()){
                     for (dataSnapShot in snapshot.children){
                         val image = dataSnapShot.child("fileUrl").getValue().toString()
@@ -51,6 +52,8 @@ class ImageFragment : Fragment() {
             }
 
         })
+        imageAdapter=ImageAdapter(imagesList)
+        recyclerView.adapter= imageAdapter
         return binding.root
     }
 }

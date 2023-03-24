@@ -21,7 +21,7 @@ class ImageAdapter(private val ImagesList: ArrayList<Images>) : RecyclerView.Ada
     }
 
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
-        Glide.with(holder.itemView.context).load(ImagesList[position].fileUrl).placeholder(R.drawable.signin).into(holder.image)
+        Glide.with(holder.itemView.context).load(ImagesList[position].fileUrl).placeholder(R.drawable.img_2).into(holder.image)
     }
 
     inner class ImageViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView){

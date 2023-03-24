@@ -2,8 +2,11 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle" >
 
-    <solid android:color="#BCE7F6"/>
-    <corners android:radius="30dp"/>
-    <size android:height="@dimen/cardview_default_elevation"/>
+    <stroke android:color="#2962FF"
+        android:width="3dp"/>
+    <solid android:color="#3600D4C2"/>
+    <corners android:radius="10dp"/>
+
+
 
 </shape>
