@@ -10,16 +10,14 @@ class FragmentPageAdapter(
     lifecycle: Lifecycle
 ) : FragmentStateAdapter(fragmentManager,lifecycle){
     override fun getItemCount(): Int {
-        return 2
+        return 3
     }
 
     override fun createFragment(position: Int): Fragment {
-        return if (position==0)
-            ImageFragment()
-        else
-            PdfFragment()
-
-
-
+        return when(position){
+            0 -> ImageFragment()
+            1-> VideoFragment()
+            else -> PdfFragment()
+        }
     }
 }

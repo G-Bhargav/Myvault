@@ -32,6 +32,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var adapter: FragmentPageAdapter
     private var storageReference= Firebase.storage.reference
     private  var currentfile: Uri?= null
+    private lateinit var fileType: String
     private lateinit var database : DatabaseReference
 
 
@@ -55,6 +56,7 @@ class MainActivity : AppCompatActivity() {
         tabLayout= binding.tabLayout
         viewPager= binding.viewpager
         tabLayout.addTab(tabLayout.newTab().setText("Images"))
+        tabLayout.addTab(tabLayout.newTab().setText("Videos"))
         tabLayout.addTab(tabLayout.newTab().setText("PDF's"))
 
         binding.viewpager.adapter = adapter
@@ -68,9 +70,15 @@ class MainActivity : AppCompatActivity() {
                     if(tab.position==0){
                         binding.btnImageAdd.visibility= View.VISIBLE
                         binding.btnPdfAdd.visibility= View.GONE
+                        binding.btnVideoAdd.visibility= View.GONE
+                    }else if(tab.position==1){
+                        binding.btnImageAdd.visibility= View.GONE
+                        binding.btnPdfAdd.visibility= View.GONE
+                        binding.btnVideoAdd.visibility= View.VISIBLE
                     }else{
                         binding.btnImageAdd.visibility= View.GONE
                         binding.btnPdfAdd.visibility= View.VISIBLE
+                        binding.btnVideoAdd.visibility= View.GONE
                     }
                 }
 
@@ -96,6 +104,7 @@ class MainActivity : AppCompatActivity() {
         binding.btnImageAdd.setOnClickListener{
             Intent(Intent.ACTION_GET_CONTENT).also {
                 it.type="image/*"
+                fileType="Images"
                 Launcher.launch(it)
 
             }
@@ -103,8 +112,15 @@ class MainActivity : AppCompatActivity() {
         binding.btnPdfAdd.setOnClickListener{
             Intent(Intent.ACTION_GET_CONTENT).also {
                 it.type="application/*"
-                PdfLauncher.launch(it)
-
+                fileType = "PDFs"
+                Launcher.launch(it)
+            }
+        }
+        binding.btnVideoAdd.setOnClickListener{
+            Intent(Intent.ACTION_GET_CONTENT).also {
+                it.type= "video/*"
+                fileType = "Videos"
+                Launcher.launch(it)
             }
         }
 
@@ -115,7 +131,7 @@ class MainActivity : AppCompatActivity() {
             result?.data?.data?.let {
                 currentfile = it
                 val fil = getFilenameFromUri(this,it).toString()
-                uploadImageToStorage(fil)
+                uploadToStorage(fil)
                 binding.btnUpload.visibility= View.VISIBLE
             }
         }else {
@@ -124,27 +140,10 @@ class MainActivity : AppCompatActivity() {
         })
 
     }
-    @RequiresApi(Build.VERSION_CODES.O)
-    private val PdfLauncher=registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
-            result ->
-        (if(result.resultCode== RESULT_OK ){
-            result?.data?.data?.let {
-                currentfile = it
-                val fil = getFilenameFromUri(this,it).toString()
-                uploadPdfToStorage(fil)
-                binding.btnUpload.visibility= View.VISIBLE
-            }
-        }else {
-            Toast.makeText(this,"cancelled",Toast.LENGTH_SHORT).show()
-
-        })
-
-    }
-    private fun uploadImageToStorage(filename: String) {
+     private fun uploadToStorage(filename: String) {
         try{
             currentfile?.let {
-
-                storageReference.child("Images/${filename}").putFile(it).addOnProgressListener {
+                storageReference.child("$fileType/${filename}").putFile(it).addOnProgressListener {
                     val prog : DecimalFormat = DecimalFormat("##")
                     var progr = prog.format(it.bytesTransferred.toFloat()/it.totalByteCount.toFloat()).toFloat()*100
                     binding.btnUpload.text= ("Uploading($progr)%").toString()
@@ -152,62 +151,20 @@ class MainActivity : AppCompatActivity() {
                     binding.btnUpload.visibility= View.GONE
                     Toast.makeText(this,"Successfully Uploaded in Storage",Toast.LENGTH_SHORT).show()
                     val username = firebaseAuth.currentUser?.email!!.trim().substringBefore(".")
-                    val fileLocation =storageReference.child("Images/${filename}")
+                    val fileLocation =storageReference.child("$fileType/${filename}")
                     val extension = filename.substringAfter(".")
                     fileLocation.downloadUrl.addOnSuccessListener {uri->
                         var url = uri.toString()
                         val file = File(extension,url)
-                        database.child(username).child("Images").child(filename.trim().substringBefore(".")).setValue(file).addOnSuccessListener {
+                        database.child(username).child(fileType).child(filename.trim().substringBefore(".")).setValue(file).addOnSuccessListener {
                             Toast.makeText(this,"successfully Uploaded to realtime database", Toast.LENGTH_SHORT).show()
                         }.addOnFailureListener{
                             Toast.makeText(this,"error on realtime database", Toast.LENGTH_SHORT).show()
                         }
-
-                    }
-
-
-                }.addOnFailureListener{
-                    Toast.makeText(this,"error on upload", Toast.LENGTH_SHORT).show()
-                }
-
-
-
-            }
-        }
-        catch(e: Exception) {
-            Toast.makeText(this,e.toString(), Toast.LENGTH_SHORT).show()
-        }
-    }
-    private fun uploadPdfToStorage(filename: String) {
-        try{
-            currentfile?.let {
-
-                storageReference.child("PDFs/${filename}").putFile(it).addOnProgressListener {
-                    val prog : DecimalFormat = DecimalFormat("##")
-                    var progr = prog.format(it.bytesTransferred.toFloat()/it.totalByteCount.toFloat()).toFloat()*100
-                    binding.btnUpload.text= ("Uploading($progr)%").toString()
-                }.addOnSuccessListener {
-                    binding.btnUpload.visibility= View.GONE
-                    Toast.makeText(this,"Successfully Uploaded in Storage",Toast.LENGTH_SHORT).show()
-                    val username = firebaseAuth.currentUser?.email!!.trim().substringBefore(".")
-                    val fileLocation =storageReference.child("PDFs/${filename}")
-                    val extension = filename.substringAfter(".")
-                    fileLocation.downloadUrl.addOnSuccessListener {uri->
-                        var url = uri.toString()
-                        val file = File(extension,url)
-                        database.child(username).child("PDFs").child(filename.trim().substringBefore(".")).setValue(file).addOnSuccessListener {
-                            Toast.makeText(this,"successfully Uploaded to realtime database", Toast.LENGTH_SHORT).show()
-                        }.addOnFailureListener{
-                            Toast.makeText(this,"error on realtime database", Toast.LENGTH_SHORT).show()
-                        }
-
                     }
                 }.addOnFailureListener{
                     Toast.makeText(this,"error on upload", Toast.LENGTH_SHORT).show()
                 }
-
-
-
             }
         }
         catch(e: Exception) {
@@ -230,12 +187,4 @@ class MainActivity : AppCompatActivity() {
         startMain.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         startActivity(startMain)
     }
-
-
-
-
 }
-
-
-
-
