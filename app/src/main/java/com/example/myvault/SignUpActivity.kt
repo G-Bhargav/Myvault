@@ -33,24 +33,6 @@ class SignUpActivity : AppCompatActivity() {
             val pass = binding.PasswordSignUp.text.toString()
             val confirmpass = binding.ConfirmPasswordSignUp.text.toString()
 
-            if (email.isNotEmpty() && pass.isNotEmpty() && confirmpass.isNotEmpty()) {
-                if (pass == confirmpass) {
-                    firebaseAuth.createUserWithEmailAndPassword(email, pass).addOnCompleteListener {
-                        if (it.isSuccessful) {
-                            val intent = Intent(this, MainActivity::class.java)
-                            Toast.makeText(this,"Account Successfully created",Toast.LENGTH_SHORT).show()
-                            startActivity(intent)
-                        } else {
-
-                            Toast.makeText(this, it.exception.toString(), Toast.LENGTH_SHORT).show()
-                        }
-                    }
-
-                } else {
-                    "Confirm password and password aren't matching".also { binding.ConfirmPasswordSignUp.error = it }
-
-                }
-            }
             if(email.isEmpty()){
                 binding.EmailSignUp.error=" Username cannot be empty"
             }
@@ -78,6 +60,24 @@ class SignUpActivity : AppCompatActivity() {
             if (!isValidPassword(pass)){
                 binding.PasswordSignUp.error="password length>= 6\n should contain at least one capital letter\nshould contain atleast one small letter\n should contain atleast one number\nshould contain atleast one special character(@#\$%^&+=_.)"
 
+            }
+            if (email.isNotEmpty() && pass.isNotEmpty() && confirmpass.isNotEmpty()) {
+                if (pass == confirmpass) {
+                    firebaseAuth.createUserWithEmailAndPassword(email, pass).addOnCompleteListener {
+                        if (it.isSuccessful) {
+                            val intent = Intent(this, MainActivity::class.java)
+                            Toast.makeText(this,"Account Successfully created",Toast.LENGTH_SHORT).show()
+                            startActivity(intent)
+                        } else {
+
+                            Toast.makeText(this, it.exception.toString(), Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
+                } else {
+                    "Confirm password and password aren't matching".also { binding.ConfirmPasswordSignUp.error = it }
+
+                }
             }
         }
     }

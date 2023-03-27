@@ -2,16 +2,21 @@ package com.example.myvault
 
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.OpenableColumns
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.RecyclerView
+import androidx.core.content.ContextCompat
+import android.Manifest
+import android.util.Log
+import androidx.core.app.ActivityCompat
 import androidx.viewpager2.widget.ViewPager2
 import com.example.myvault.databinding.ActivityMainBinding
 import com.google.android.material.tabs.TabLayout
@@ -34,13 +39,19 @@ class MainActivity : AppCompatActivity() {
     private  var currentfile: Uri?= null
     private lateinit var fileType: String
     private lateinit var database : DatabaseReference
-
+    private lateinit var permissionLauncher: ActivityResultLauncher<Array<String>>
+    private var isWritePermission = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         this.binding =ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        permissionLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()){permissions->
+            isWritePermission= permissions[Manifest.permission.WRITE_EXTERNAL_STORAGE] ?: isWritePermission
+        }
+        requestPermission()
 
         firebaseAuth= FirebaseAuth.getInstance()
         database= FirebaseDatabase.getInstance().reference
@@ -187,4 +198,17 @@ class MainActivity : AppCompatActivity() {
         startMain.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         startActivity(startMain)
     }
+
+    private fun requestPermission(){
+        isWritePermission = ContextCompat.checkSelfPermission(this,Manifest.permission.WRITE_EXTERNAL_STORAGE)== PackageManager.PERMISSION_GRANTED
+        val permissionRequest : MutableList<String> = ArrayList()
+        if(!isWritePermission){
+            permissionRequest.add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+
+        }
+        if(permissionRequest.isNotEmpty()){
+            permissionLauncher.launch(permissionRequest.toTypedArray())
+        }
+    }
+
 }

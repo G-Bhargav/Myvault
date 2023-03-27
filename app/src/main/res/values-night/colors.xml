@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <color name="tablayoutstart">#536976</color>
+    <color name="tablayoutend">#292E49</color>
+    <color name="individualItemStart">#243949</color>
+    <color name="individualItemEnd">#517FA4</color>
+    <color name="color">#8be9fd</color>
+    <color name="backgroundStart">#2C3E50</color>
+    <color name="backgroundEnd">#000000</color>
+
+</resources>

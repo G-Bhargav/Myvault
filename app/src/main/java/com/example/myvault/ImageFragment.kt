@@ -41,7 +41,7 @@ class ImageFragment : Fragment() {
                     for (dataSnapShot in snapshot.children){
                         val image = dataSnapShot.child("fileUrl").getValue().toString()
                         imagesList.add(Images(image))
-                    }
+                      }
                     imageAdapter=ImageAdapter(imagesList)
                     recyclerView.adapter= imageAdapter
                 }

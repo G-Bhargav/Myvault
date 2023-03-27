@@ -11,4 +11,11 @@
     <color name="light_blue_600">#FF039BE5</color>
     <color name="gray_400">#FFBDBDBD</color>
     <color name="gray_600">#FF757575</color>
+    <color name="tablayoutstart">#F5F7FA</color>
+    <color name="tablayoutend">#C3CFE2</color>
+    <color name="individualItemStart">#D7FFFE</color>
+    <color name="individualItemEnd">#ffffff</color>
+    <color name="color">#FF000000</color>
+    <color name="backgroundStart">#B78E9EAB</color>
+    <color name="backgroundEnd">#eef2f3</color>
 </resources>

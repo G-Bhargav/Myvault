@@ -29,21 +29,6 @@ class SignInActivity : AppCompatActivity() {
             val email = binding.EmailSignIn.text.toString()
             val pass = binding.PasswordSignIn.text.toString()
 
-
-            if (email.isNotEmpty() && pass.isNotEmpty()) {
-                    firebaseAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener {
-                        if (it.isSuccessful) {
-                            val intent = Intent(this, MainActivity::class.java)
-                            startActivity(intent)
-                        } else {
-
-                            Toast.makeText(this, it.exception.toString(), Toast.LENGTH_SHORT).show()
-                        }
-                    }
-
-
-            }
-
             if(email.isEmpty()){
                 binding.EmailSignIn.error=" Username cannot be empty"
             }
@@ -67,7 +52,17 @@ class SignInActivity : AppCompatActivity() {
             }
             if (!isValidPassword(pass)){
                 binding.PasswordSignIn.error="password length>= 6\n should contain at least one capital letter\nshould contain atleast one small letter\n should contain atleast one number\nshould contain atleast one special character(@#\$%^&+=_.)"
+            }
+            if (email.isNotEmpty() && pass.isNotEmpty()) {
+                firebaseAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        val intent = Intent(this, MainActivity::class.java)
+                        startActivity(intent)
+                    } else {
 
+                        Toast.makeText(this, it.exception.toString(), Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
         }
     }
