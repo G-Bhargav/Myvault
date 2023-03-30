@@ -18,6 +18,9 @@
         android:theme="@style/Theme.MyVault"
         tools:targetApi="31">
         <activity
+            android:name=".Imageviewer"
+            android:exported="false" />
+        <activity
             android:name=".Videoviewer"
             android:exported="false" />
         <activity

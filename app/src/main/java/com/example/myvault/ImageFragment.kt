@@ -1,5 +1,6 @@
 package com.example.myvault
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -9,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.myvault.databinding.FragmentImageBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
@@ -29,8 +31,9 @@ class ImageFragment : Fragment() {
     ): View? {
         binding=FragmentImageBinding.inflate(layoutInflater)
         recyclerView= binding.rvImageView
-        recyclerView.layoutManager= LinearLayoutManager(context)
+        recyclerView.layoutManager= StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL)
         imagesList= arrayListOf()
+        imageAdapter=ImageAdapter(imagesList)
         firebaseAuth= FirebaseAuth.getInstance()
         val username = firebaseAuth.currentUser?.email!!.trim().substringBefore(".")
         databaseReference= FirebaseDatabase.getInstance().getReference().child(username).child("Images")
@@ -42,8 +45,8 @@ class ImageFragment : Fragment() {
                         val image = dataSnapShot.child("fileUrl").getValue().toString()
                         imagesList.add(Images(image))
                       }
-                    imageAdapter=ImageAdapter(imagesList)
-                    recyclerView.adapter= imageAdapter
+                    imageAdapter.setdata(imagesList)
+                    imageAdapter.setdata(imagesList)
                 }
             }
 
@@ -52,7 +55,6 @@ class ImageFragment : Fragment() {
             }
 
         })
-        imageAdapter=ImageAdapter(imagesList)
         recyclerView.adapter= imageAdapter
         return binding.root
     }

@@ -3,6 +3,7 @@ package com.example.myvault
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.EditText
 import android.widget.Toast
 import com.example.myvault.databinding.ActivitySignUpBinding
 import com.google.firebase.auth.FirebaseAuth
@@ -13,6 +14,7 @@ class SignUpActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySignUpBinding
     private lateinit var firebaseAuth: FirebaseAuth
+    private lateinit var database : DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,6 +23,7 @@ class SignUpActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         firebaseAuth = FirebaseAuth.getInstance()
+        database= FirebaseDatabase.getInstance().reference
 
 
         binding.textView.setOnClickListener {
@@ -32,6 +35,7 @@ class SignUpActivity : AppCompatActivity() {
             val email = binding.EmailSignUp.text.toString()
             val pass = binding.PasswordSignUp.text.toString()
             val confirmpass = binding.ConfirmPasswordSignUp.text.toString()
+            val Name = binding.Name.text.toString()
 
             if(email.isEmpty()){
                 binding.EmailSignUp.error=" Username cannot be empty"
@@ -61,10 +65,12 @@ class SignUpActivity : AppCompatActivity() {
                 binding.PasswordSignUp.error="password length>= 6\n should contain at least one capital letter\nshould contain atleast one small letter\n should contain atleast one number\nshould contain atleast one special character(@#\$%^&+=_.)"
 
             }
-            if (email.isNotEmpty() && pass.isNotEmpty() && confirmpass.isNotEmpty()) {
+            if (email.isNotEmpty() && pass.isNotEmpty() && confirmpass.isNotEmpty()&& isValidPassword(pass)) {
                 if (pass == confirmpass) {
                     firebaseAuth.createUserWithEmailAndPassword(email, pass).addOnCompleteListener {
                         if (it.isSuccessful) {
+                            val username = firebaseAuth.currentUser?.email!!.trim().substringBefore(".")
+                            database.child(username).child("Name").setValue(Name)
                             val intent = Intent(this, MainActivity::class.java)
                             Toast.makeText(this,"Account Successfully created",Toast.LENGTH_SHORT).show()
                             startActivity(intent)

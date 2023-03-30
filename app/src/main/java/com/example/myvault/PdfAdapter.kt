@@ -9,9 +9,9 @@ import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
-import androidx.core.content.ContextCompat.getSystemService
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 
 class PdfAdapter(private val pdfslist : ArrayList<Pdf>): RecyclerView.Adapter<PdfAdapter.PdfViewHolder>(){
@@ -35,8 +35,8 @@ class PdfAdapter(private val pdfslist : ArrayList<Pdf>): RecyclerView.Adapter<Pd
             holder.itemView.context.startActivity(intent)
         })
 
-        /*val btn = holder.itemView.findViewById<Button>(R.id.btndownload)
-        btn.setOnClickListener{
+
+        holder.btn.setOnClickListener{
             val url = currentitem.fileURl
             val request = DownloadManager.Request(Uri.parse(url))
             request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE or DownloadManager.Request.NETWORK_WIFI)
@@ -45,9 +45,10 @@ class PdfAdapter(private val pdfslist : ArrayList<Pdf>): RecyclerView.Adapter<Pd
             request.allowScanningByMediaScanner()
             request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
             request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,"${currentitem.pdfname}")
-            val manager = getSystemService(holder.itemView.context.DOWNLOAD_SERVICE) as DownloadManager
+            val manager = holder.itemView.context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
             manager.enqueue(request)
-        }*/
+//            Toast
+        }
     }
 
     override fun getItemCount(): Int {
@@ -57,5 +58,6 @@ class PdfAdapter(private val pdfslist : ArrayList<Pdf>): RecyclerView.Adapter<Pd
 
     inner class PdfViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView){
         val Pdfname= itemView.findViewById<TextView>(R.id.textView3)
+        val btn = itemView.findViewById<ImageButton>(R.id.imageButton)
     }
 }
