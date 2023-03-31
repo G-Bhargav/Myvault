@@ -168,7 +168,6 @@ class MainActivity : AppCompatActivity() {
                 currentfile = it
                 val fil = getFilenameFromUri(this,it).toString()
                 uploadToStorage(fil)
-                binding.btnUpload.visibility= View.VISIBLE
             }
         }else {
             Toast.makeText(this,"cancelled",Toast.LENGTH_SHORT).show()
@@ -180,9 +179,10 @@ class MainActivity : AppCompatActivity() {
         try{
             currentfile?.let {
                 storageReference.child("$fileType/${filename}").putFile(it).addOnProgressListener {
+                    binding.btnUpload.visibility= View.VISIBLE
                     var prog = DecimalFormat("##.##")
                     var progr = prog.format(it.bytesTransferred.toFloat()/it.totalByteCount.toFloat()).toFloat()*100
-                    binding.btnUpload.text= ("Uploading $progr%").toString()
+                    binding.btnUpload.text= ("Uploaded $progr%").toString()
                 }.addOnSuccessListener {
                     binding.btnUpload.visibility= View.GONE
                     Toast.makeText(this,"Successfully Uploaded in Storage",Toast.LENGTH_SHORT).show()

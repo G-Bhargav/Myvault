@@ -2,7 +2,6 @@ package com.example.myvault
 
 import android.app.DownloadManager
 import android.content.Context
-import android.content.Context.DOWNLOAD_SERVICE
 import android.content.Intent
 import android.net.Uri
 import android.os.Environment
@@ -44,10 +43,12 @@ class PdfAdapter(private val pdfslist : ArrayList<Pdf>): RecyclerView.Adapter<Pd
             request.setDescription("${currentitem.pdfname} is downloading...")
             request.allowScanningByMediaScanner()
             request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-            request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,"${currentitem.pdfname}")
+            request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,"${currentitem.pdfname}.pdf")
             val manager = holder.itemView.context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
             manager.enqueue(request)
-//            Toast
+            Toast.makeText(holder.itemView.context,"Downloading...",Toast.LENGTH_SHORT).show()
+            holder.btn.visibility= View.GONE
+
         }
     }
 
@@ -58,6 +59,6 @@ class PdfAdapter(private val pdfslist : ArrayList<Pdf>): RecyclerView.Adapter<Pd
 
     inner class PdfViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView){
         val Pdfname= itemView.findViewById<TextView>(R.id.textView3)
-        val btn = itemView.findViewById<ImageButton>(R.id.imageButton)
+        val btn = itemView.findViewById<ImageButton>(R.id.btnVideoDownload)
     }
 }
